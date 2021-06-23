@@ -1,6 +1,6 @@
 <template>
   <div class="container py-8 mx-auto">
-    <h2 class="mb-8 text-4xl font-bold">My documents</h2>
+    <h2 class="mb-8 text-4xl font-bold">Fowarded Documents</h2>
     <div class="w-full">
       <div class="my-6 bg-white rounded shadow-md">
         <table class="w-full table-auto min-w-max">
@@ -9,8 +9,8 @@
               class="text-sm leading-normal text-gray-600 uppercase bg-gray-200"
             >
               <th class="px-6 py-3 text-left">Title</th>
-              <th class="px-6 py-3 text-left">Owner</th>
-            <!--   <th class="px-6 py-3 text-center">Forwarded by</th> -->
+             <!--  <th class="px-6 py-3 text-left">Owner</th> -->
+              <th class="px-6 py-3 text-center">Forwarded to</th>
               <th class="px-6 py-3 text-center">Status</th>
               <th class="px-6 py-3 text-center">Last updated</th>
             </tr>
@@ -21,10 +21,10 @@
                 <td class="px-6 py-3 text-left whitespace-nowrap">
                   <div class="flex items-center">
 
-                    <nuxt-link :to="`/dashboard/documents/${doc.id}`" class="font-medium">{{doc.title}}</nuxt-link>
+                    <nuxt-link :to="`/dashboard/documents/${doc.document.id}`" class="font-medium">{{doc.document.title}}</nuxt-link>
                   </div>
                 </td>
-                <td class="px-6 py-3 text-left">
+                <!-- <td class="px-6 py-3 text-left">
                   <div class="flex items-center">
                     <div class="mr-2">
                       <img
@@ -32,7 +32,20 @@
                         src="https://randomuser.me/api/portraits/men/1.jpg"
                       />
                     </div>
-                    <span>{{doc.expeditor.name}}</span>
+                    <span>{{doc.document.expeditor.name}}</span>
+                  </div>
+                </td> -->
+
+
+                 <td class="px-6 py-3 text-left">
+                  <div class="flex items-center">
+                    <div class="mr-2">
+                      <img
+                        class="w-6 h-6 rounded-full"
+                        src="https://randomuser.me/api/portraits/men/1.jpg"
+                      />
+                    </div>
+                    <span>{{doc.receiver.name}}</span>
                   </div>
                 </td>
                <!--  <td class="px-6 py-3 text-center">
@@ -54,7 +67,7 @@
                 <td class="px-6 py-3 text-center">
                   <span
                     class="px-3 py-1 text-xs text-purple-600 bg-purple-200 rounded-full "
-                    >{{doc.status}}</span
+                    >{{doc.document.status}}</span
                   >
                 </td>
                 <td class="px-6 py-3 text-center">
@@ -129,18 +142,18 @@
 </template>
 
 <script>
-import { timeAgo } from "../../utilities/timeago";
+import {timeAgo} from '../../utilities/timeago'
 export default {
   layout: 'dashboard',
 
   data() {
     return {
       myDocuments: [],
-      timeAge: timeAgo
+      timeAge: timeAgo,
     }
   },
   async fetch() {
-    this.myDocuments = await this.$axios.$get('documents')
+    this.myDocuments = await this.$axios.$get('documents/fowarded')
   },
   methods: {},
 }

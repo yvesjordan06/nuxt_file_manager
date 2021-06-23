@@ -1,12 +1,19 @@
 <template>
   <div class="py-8">
-    <div v-if="document">
-      <h1 class="text-4xl font-bold text-center">{{ document.title }}</h1>
+    <div class="container max-w-screen-md p-8 mx-auto bg-white" v-if="document">
+      <h1 class="text-4xl font-bold text-center">{{ document.title }} <sup class="p-1 text-sm capitalize bg-purple-400 rounded-full">{{document.status}}</sup></h1>
 
-      <div class="mt-4">
+
+<div class="flex flex-col justify-between lg:flex-row">
+ <div class="mt-4">
         <p class="text-sm font-bold text-green-700 uppercase">OBJECT</p>
          <p class="mt-2 tracking-wide text-gray-800">{{document.object}}</p>
       </div>
+
+
+
+</div>
+
 
 
           <div class="mt-4">
@@ -20,10 +27,7 @@
          <p class="mt-2 tracking-wide text-gray-800">{{document.expeditor.name}}</p>
       </div>
 
-        <div class="mt-4">
-        <p class="text-sm font-bold text-green-700 uppercase">Status</p>
-         <p class="mt-2 tracking-wide text-gray-800">{{document.status}}</p>
-      </div>
+
 
 
        <div class="mt-4">

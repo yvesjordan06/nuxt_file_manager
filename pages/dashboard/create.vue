@@ -41,11 +41,14 @@
                   <input
                     id="hidden-input"
                     type="file"
-                    multiple
+                    @change="addFile({dataTransfer:{files: $refs.file_input.files}})"
                     class="hidden"
+                    ref="file_input"
                   />
                   <div class="flex justify-center">
                     <button
+                    @click="$refs.file_input.click()"
+
                       id="button"
                       class="px-3 py-1 mt-2 bg-gray-200 rounded-sm hover:bg-gray-300 focus:shadow-outline focus:outline-none"
                     >

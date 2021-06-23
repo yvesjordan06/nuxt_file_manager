@@ -9,22 +9,29 @@
               class="text-sm leading-normal text-gray-600 uppercase bg-gray-200"
             >
               <th class="px-6 py-3 text-left">Title</th>
-             <!--  <th class="px-6 py-3 text-left">Owner</th> -->
+              <!--  <th class="px-6 py-3 text-left">Owner</th> -->
               <th class="px-6 py-3 text-center">Forwarded by</th>
               <th class="px-6 py-3 text-center">Status</th>
               <th class="px-6 py-3 text-center">Last updated</th>
+              <th class="px-6 py-3 text-center">action</th>
             </tr>
           </thead>
           <tbody class="text-sm font-light text-gray-600">
-
-              <tr v-for="doc in myDocuments" :key="doc.id" class="border-b border-gray-200 hover:bg-gray-100">
-                <td class="px-6 py-3 text-left whitespace-nowrap">
-                  <div class="flex items-center">
-
-                    <nuxt-link :to="`/dashboard/documents/${doc.id}`" class="font-medium">{{doc.document.title}}</nuxt-link>
-                  </div>
-                </td>
-                <!-- <td class="px-6 py-3 text-left">
+            <tr
+              v-for="doc in myDocuments"
+              :key="doc.id"
+              class="border-b border-gray-200 hover:bg-gray-100"
+            >
+              <td class="px-6 py-3 text-left whitespace-nowrap">
+                <div class="flex items-center">
+                  <nuxt-link
+                    :to="`/dashboard/documents/${doc.document.id}`"
+                    class="font-medium"
+                    >{{ doc.document.title }}</nuxt-link
+                  >
+                </div>
+              </td>
+              <!-- <td class="px-6 py-3 text-left">
                   <div class="flex items-center">
                     <div class="mr-2">
                       <img
@@ -36,19 +43,18 @@
                   </div>
                 </td> -->
 
-
-                 <td class="px-6 py-3 text-left">
-                  <div class="flex items-center">
-                    <div class="mr-2">
-                      <img
-                        class="w-6 h-6 rounded-full"
-                        src="https://randomuser.me/api/portraits/men/1.jpg"
-                      />
-                    </div>
-                    <span>{{doc.expeditor.name}}</span>
+              <td class="px-6 py-3 text-left">
+                <div class="flex items-center">
+                  <div class="mr-2">
+                    <img
+                      class="w-6 h-6 rounded-full"
+                      src="https://randomuser.me/api/portraits/men/1.jpg"
+                    />
                   </div>
-                </td>
-               <!--  <td class="px-6 py-3 text-center">
+                  <span>{{ doc.expeditor.name }}</span>
+                </div>
+              </td>
+              <!--  <td class="px-6 py-3 text-center">
                   <div class="flex items-center justify-center">
                     <img
                       class="w-6 h-6 transform border border-gray-200 rounded-full hover:scale-125"
@@ -64,14 +70,14 @@
                     />
                   </div>
                 </td> -->
-                <td class="px-6 py-3 text-center">
-                  <span
-                    class="px-3 py-1 text-xs text-purple-600 bg-purple-200 rounded-full "
-                    >{{doc.document.status}}</span
-                  >
-                </td>
-                <td class="px-6 py-3 text-center">
-                 <!--  <div class="flex justify-center item-center">
+              <td class="px-6 py-3 text-center">
+                <span
+                  class="px-3 py-1 text-xs text-purple-600 bg-purple-200 rounded-full "
+                  >{{ doc.document.status }}</span
+                >
+              </td>
+              <td class="px-6 py-3 text-center">
+                <!--  <div class="flex justify-center item-center">
                     <div
                       class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110"
                     >
@@ -130,30 +136,121 @@
                       </svg>
                     </div>
                   </div> -->
-              {{doc.updated_at}}
-                </td>
-              </tr>
+                {{ timeAge(doc.updated_at) }}
+              </td>
 
+              <td
+                class="flex flex-wrap px-6 py-3 text-center"
+                v-if="
+                  doc.document.status !== 'complete' &&
+                  doc.document.status !== 'cancel'
+                "
+              >
+                <button
+                  v-if="doc.id === doc.document.last_share"
+                  @click="forward(doc)"
+                  class="px-3 py-1 text-xs text-green-600 bg-purple-200 rounded-full "
+                >
+                  Forward
+                </button>
+
+                <button
+                  v-if="doc.id === doc.document.last_share"
+                  @click="setStatus(doc.document.id, 'complete', doc)"
+                  class="px-3 py-1 mx-1 text-xs text-green-600 bg-purple-200 rounded-full "
+                >
+                  Complete
+                </button>
+
+                <button
+                  v-if="doc.id === doc.document.last_share"
+                  @click="setStatus(doc.document.id, 'cancel', doc)"
+                  class="px-3 py-1 text-xs text-purple-600 bg-purple-200 rounded-full "
+                >
+                  Cancel
+                </button>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
     </div>
+
+<div v-if="shareWindow" @click="shareWindow=false" class="absolute inset-0 flex flex-col justify-center ">
+  <div class="absolute inset-0 z-0 bg-gray-800 opacity-25">
+
+  </div>
+  <div class="relative z-10 max-w-2xl p-8 mx-auto bg-white shadow-xl" @click.stop>
+      <p class="text-xl font-bold text-center">Forward to :</p>
+      <select
+                      class="block w-full px-4 py-3 border rounded appearance-none bg-grey-lighter text-grey-darker border-grey-lighter"
+                      id="grid-last-name"
+                      type="text"
+                      placeholder="Doe"
+                      v-model.number="doc.receiver_id"
+                    >
+                      <option
+                        v-for="user in users"
+                        :key="user.id"
+                        :value="user.id"
+                      >
+                        {{ user.name }}
+                      </option>
+                    </select>
+
+                    <div class="flex justify-center">
+                      <button @click.stop="sendDoc" class="p-4 py-2 mt-4 text-white bg-green-700 rounded-lg hover:bg-green-500">Send</button>
+                    </div>
+    </div>
+</div>
+
   </div>
 </template>
 
 <script>
+import { timeAgo } from '../../utilities/timeago'
 export default {
   layout: 'dashboard',
 
   data() {
     return {
       myDocuments: [],
+      doc:{
+        receiver_id:'',
+        share_id:''
+      },
+      shareWindow: false,
     }
   },
   async fetch() {
     this.myDocuments = await this.$axios.$get('documents/received')
+     this.users = await this.$axios.$get('/users')
+    if (this.users) {
+      this.doc.receiver_id = this.users[0].id
+    }
   },
-  methods: {},
+  methods: {
+    timeAge(date) {
+     return(timeAgo(date))
+
+    },
+    async setStatus(id, status, doc) {
+      await this.$axios.$put(`/documents/${id}/${status}`)
+      doc.status = status
+      this.$fetch()
+    },
+
+    forward(doc) {
+      this.doc.share_id = doc.id;
+      this.shareWindow = true;
+    },
+
+    async sendDoc(){
+      await this.$axios.$post("/documents/forward", this.doc)
+      this.$fetch()
+      this.shareWindow = false
+    }
+  },
 }
 </script>
 
